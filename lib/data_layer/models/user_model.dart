@@ -16,4 +16,12 @@ class UserModel {
     lName = data["l_name"];
     email = data["email"];
   }
+
+  static Map<String, dynamic> toJson(UserModel userModel) => {
+    "id": userModel.id,
+    "f_name": userModel.fName,
+    "l_name": userModel.lName,
+    "email": userModel.email,
+  };
+
 }

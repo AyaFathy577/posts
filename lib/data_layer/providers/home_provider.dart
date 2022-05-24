@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:posts/constants/variables.dart';
 import 'package:posts/data_layer/models/post_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeProvider extends ChangeNotifier {
   String _description = "";
@@ -29,8 +31,29 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getPosts() {
-    _posts = [];
+  getPosts() async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    var loadedPosts = sharedPref.getString(Variables.posts);
+    if (loadedPosts != null) {
+      _posts = PostModel.decode(loadedPosts);
+    } else {
+      _posts = [];
+    }
     notifyListeners();
+  }
+
+  addPost(PostModel postModel) async {
+    _posts = [..._posts, postModel];
+    notifyListeners();
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setString(Variables.posts, PostModel.encode(_posts));
+  }
+
+  removePost(int index) async {
+    _posts.removeAt(index);
+    _posts = [..._posts];
+    notifyListeners();
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    sharedPref.setString(Variables.posts, PostModel.encode(_posts));
   }
 }

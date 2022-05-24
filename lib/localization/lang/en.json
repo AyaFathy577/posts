@@ -27,5 +27,6 @@
   "ok": "Ok",
   "cancel": "Cancel",
   "camera": "Camera",
-  "gallery": "Gallery"
+  "gallery": "Gallery",
+  "empty": "No Data Found, please add post."
 }

@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:posts/constants/colors.dart';
+import 'package:posts/data_layer/models/post_model.dart';
+import 'package:posts/data_layer/models/user_model.dart';
 import 'package:posts/data_layer/providers/home_provider.dart';
 import 'package:posts/localization/language_constants.dart';
 import 'package:provider/provider.dart';
@@ -118,20 +120,23 @@ class _AddPostDialogState extends State<AddPostDialog> {
                   ),
                 ),
                 const SizedBox(width: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-                  child: Text(
-                    getTranslated(context, "publish"),
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16,
-                      height: 1.8,
-                      fontWeight: FontWeight.w600,
+                InkWell(
+                  onTap: () => _publish(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+                    child: Text(
+                      getTranslated(context, "publish"),
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontSize: 16,
+                        height: 1.8,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -202,5 +207,18 @@ class _AddPostDialogState extends State<AddPostDialog> {
         );
       },
     );
+  }
+
+  _publish() async {
+    HomeProvider provider = Provider.of<HomeProvider>(context, listen: false);
+    await provider.addPost(PostModel(
+        id: 1,
+        userModel: UserModel(id: 0, email: "", fName: "", lName: ""),
+        description: provider.description,
+        link: provider.pickedFile!.path,
+        isBookmark: false,
+        isLike: false,
+        numOfLikes: 0));
+    Navigator.of(context).pop();
   }
 }

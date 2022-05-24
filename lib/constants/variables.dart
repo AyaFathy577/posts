@@ -11,6 +11,7 @@ class Variables {
 
   ///database
   static const String userEmail = "email";
+  static const String posts = "posts";
 
   ///routes
   static const String splashScreen = "/splash_screen";

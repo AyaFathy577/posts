@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:posts/data_layer/models/user_model.dart';
 
 class PostModel {
@@ -29,9 +31,9 @@ class PostModel {
     numOfLikes = data["num_of_likes"];
   }
 
-  Map<String, dynamic> toJson(PostModel postModel) => {
+  static Map<String, dynamic> toJson(PostModel postModel) => {
         "id": postModel.id,
-        "user": userModelToJson(postModel.userModel),
+        "user": UserModel.toJson(postModel.userModel),
         "description": postModel.description,
         "link": postModel.link,
         "is_bookmark": postModel.isBookmark,
@@ -39,10 +41,14 @@ class PostModel {
         "num_of_likes": postModel.numOfLikes,
       };
 
-  Map<String, dynamic> userModelToJson(UserModel userModel) => {
-        "id": userModel.id,
-        "f_name": userModel.fName,
-        "l_name": userModel.lName,
-        "email": userModel.email,
-      };
+  static String encode(List<PostModel> posts) => json.encode(
+        posts
+            .map<Map<String, dynamic>>((post) => PostModel.toJson(post))
+            .toList(),
+      );
+
+  static List<PostModel> decode(String posts) =>
+      (json.decode(posts) as List<dynamic>)
+          .map<PostModel>((item) => PostModel.fromJson(item))
+          .toList();
 }
