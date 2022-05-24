@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:posts/constants/colors.dart';
 import 'package:posts/constants/variables.dart';
 import 'package:posts/data_layer/models/language_model.dart';
+import 'package:posts/data_layer/providers/profile_provider.dart';
 import 'package:posts/data_layer/providers/tabs_provider.dart';
 import 'package:posts/localization/language_constants.dart';
 import 'package:posts/main.dart';
 import 'package:posts/presentation_layer/widgets/common_alert.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AppDrawer extends StatelessWidget {
   final TabController? tabController;
@@ -40,12 +42,19 @@ class AppDrawer extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  "name",
-                  style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600),
+                Selector<ProfileProvider, String>(
+                  selector: (context, provider) => provider.userEmail,
+                  builder: (context, userEmail, child) {
+                    return Text(
+                      userEmail,
+                      style: const TextStyle(
+                        color: AppColors.lightBlue,
+                        fontSize: 12,
+                        height: 1.8,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -221,9 +230,9 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  void _logOut(BuildContext context) {
-    // SharedPref sharedPref = SharedPref();
-    // sharedPref.removeAll();
+  void _logOut(BuildContext context) async {
+    SharedPreferences sharedPref = await SharedPreferences.getInstance();
+    sharedPref.clear();
     Navigator.pushNamedAndRemoveUntil(
         context, Variables.loginScreen, (route) => false);
   }
